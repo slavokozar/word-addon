@@ -1,14 +1,15 @@
 Office.onReady(() => {
     console.log("Add-in pripravený");
 
+    if (info.host === Office.HostType.Word) {
+        console.log("Word pripravený");
 
-    console.log(Office.context);
-
-    console.log(OfficeRuntime.auth.getAccessToken());
-
-    console.log('working v1.0.0.1')
+        await initUser(); // 👉 načítanie usera hneď po štarte
+    }
 
 });
+
+
 
 function insertTemplate(type) {
     Word.run(async (context) => {
@@ -31,4 +32,54 @@ function insertTemplate(type) {
 
         await context.sync();
     });
+}
+
+async function initUser() {
+    try {
+        const user = await getUserProfile();
+
+        // uložíš si ho globálne
+        window.currentUser = user;
+
+        // zobrazíš v UI
+        document.getElementById("userInfo").innerText =
+            `Prihlásený: ${user.displayName}`;
+
+    } catch (error) {
+        console.error("Nepodarilo sa načítať usera:", error);
+
+        // document.getElementById("userInfo").innerText =
+        //     "Používateľ nenačítaný";
+
+        //  console.warn("SSO nevyšlo, fallback");
+
+        // const fallback = Office.context.userProfile;
+
+        // window.currentUser = fallback;    
+    }
+}
+
+
+async function getAccessToken() {
+    return await OfficeRuntime.auth.getAccessToken({
+        allowSignInPrompt: true,
+        allowConsentPrompt: true
+    });
+}
+
+
+
+async function getUserProfile() {
+    const token = await getAccessToken();
+
+    const response = await fetch(
+        "https://graph.microsoft.com/v1.0/me",
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    return await response.json();
 }
