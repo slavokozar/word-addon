@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Verify Add-in</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #f7f7f7;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-top: 0;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #loginBtn {
+      background: #2563eb;
+      color: white;
+    }
+
+    #status {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .row {
+      margin: 8px 0;
+    }
+
+    .label {
+      font-weight: bold;
+      display: inline-block;
+      min-width: 80px;
+    }
+
+    pre {
+      background: #111;
+      color: #eee;
+      padding: 12px;
+      border-radius: 6px;
+      overflow: auto;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .success {
+      color: #166534;
+    }
+
+    .error {
+      color: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Overenie používateľa</h1>
+
+  <div class="card">
+    <p>Tento add-in zistí identitu aktuálne prihláseného používateľa vo Worde cez Office SSO.</p>
+    <button id="loginBtn" type="button">Zisti aktuálneho používateľa</button>
+    <div id="status"></div>
+  </div>
+
+  <div class="card">
+    <div class="row"><span class="label">Meno:</span> <span id="name">-</span></div>
+    <div class="row"><span class="label">Email:</span> <span id="email">-</span></div>
+    <div class="row"><span class="label">OID:</span> <span id="oid">-</span></div>
+    <div class="row"><span class="label">SUB:</span> <span id="sub">-</span></div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:16px; margin-top:0;">JWT Claims</h2>
+    <pre id="claims">{}</pre>
+  </div>
+
+  <script>
+    function setStatus(message, isError = false) {
+      const status = document.getElementById("status");
+      status.textContent = message;
+      status.className = isError ? "error" : "success";
+    }
+
+    function parseJwt(token) {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+
+      return JSON.parse(jsonPayload);
+    }
+
+    async function verifyCurrentUser() {
+      try {
+        setStatus("Získavam token...");
+
+        const token = await OfficeRuntime.auth.getAccessToken({
+          allowSignInPrompt: true,
+          allowConsentPrompt: true
+        });
+
+        const claims = parseJwt(token);
+
+        document.getElementById("name").textContent =
+          claims.name || "-";
+
+        document.getElementById("email").textContent =
+          claims.preferred_username || claims.upn || claims.email || "-";
+
+        document.getElementById("oid").textContent =
+          claims.oid || "-";
+
+        document.getElementById("sub").textContent =
+          claims.sub || "-";
+
+        document.getElementById("claims").textContent =
+          JSON.stringify(claims, null, 2);
+
+        setStatus("Používateľ bol úspešne overený.");
+      } catch (error) {
+        console.error("SSO error:", error);
+
+        document.getElementById("claims").textContent =
+          JSON.stringify(
+            {
+              message: error.message || "Unknown error",
+              code: error.code || null,
+              name: error.name || null
+            },
+            null,
+            2
+          );
+
+        setStatus("Nepodarilo sa získať token používateľa.", true);
+      }
+    }
+
+    Office.onReady(function () {
+      document.getElementById("loginBtn").addEventListener("click", verifyCurrentUser);
+      setStatus("Add-in je pripravený.");
+    });
+  </script>
+</body>
+</html>

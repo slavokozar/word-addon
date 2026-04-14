@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commands</title>
+
+  <!-- Office.js je povinný -->
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+  <script>
+    // Inicializácia - povinná aj keď nič nerobíš
+    Office.onReady(() => {
+      // nič netreba
+    });
+
+    // Toto musí existovať kvôli FunctionFile
+    function noop(event) {
+      // iba signalizujeme dokončenie (dôležité pre Office)
+      if (event && event.completed) {
+        event.completed();
+      }
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>

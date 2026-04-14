@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp
+    xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+    xsi:type="TaskPaneApp">
+
+  <Id>0353fbc1-404b-4ad5-8add-0864878f5e8a</Id>
+  <Version>1.0.3.0</Version>
+  <ProviderName>Tvoja Firma</ProviderName>
+  <DefaultLocale>sk-SK</DefaultLocale>
+  <DisplayName DefaultValue="Word User Verify Add-in"/>
+  <Description DefaultValue="Word add-in na overenie aktuálne prihláseného používateľa cez OfficeRuntime SSO."/>
+  <IconUrl DefaultValue="https://slavokozar.github.io/word-addon/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://slavokozar.github.io/word-addon/assets/icon-80.png"/>
+  <SupportUrl DefaultValue="https://slavokozar.github.io/word-addon/support"/>
+
+  <AppDomains>
+    <AppDomain>https://slavokozar.github.io/word-addon/</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Document"/>
+  </Hosts>
+
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="IdentityAPI" MinVersion="1.3"/>
+    </Sets>
+  </Requirements>
+
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://slavokozar.github.io/word-addon/index.html"/>
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides
+      xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+      xsi:type="VersionOverridesV1_0">
+
+    <Hosts>
+      <Host xsi:type="Document">
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="GetStarted.Title"/>
+            <Description resid="GetStarted.Description"/>
+            <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
+          </GetStarted>
+
+          <FunctionFile resid="Commands.Url"/>
+
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab id="TabHome">
+              <Group id="UserVerify.Group">
+                <Label resid="UserVerify.GroupLabel"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16"/>
+                  <bt:Image size="32" resid="Icon.32"/>
+                  <bt:Image size="80" resid="Icon.80"/>
+                </Icon>
+
+                <Control xsi:type="Button" id="UserVerify.OpenPane">
+                  <Label resid="UserVerify.ButtonLabel"/>
+                  <Supertip>
+                    <Title resid="UserVerify.ButtonLabel"/>
+                    <Description resid="UserVerify.ButtonTooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>UserVerifyTaskpane</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16" DefaultValue="https://slavokozar.github.io/word-addon/assets/icon-16.png"/>
+        <bt:Image id="Icon.32" DefaultValue="https://slavokozar.github.io/word-addon/assets/icon-32.png"/>
+        <bt:Image id="Icon.80" DefaultValue="https://slavokozar.github.io/word-addon/assets/icon-80.png"/>
+      </bt:Images>
+
+      <bt:Urls>
+        <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://learn.microsoft.com/office/dev/add-ins/"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://slavokozar.github.io/word-addon/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://slavokozar.github.io/word-addon/taskpane.html"/>
+      </bt:Urls>
+
+      <bt:ShortStrings>
+        <bt:String id="GetStarted.Title" DefaultValue="User Verify Add-in"/>
+        <bt:String id="UserVerify.GroupLabel" DefaultValue="User Verify"/>
+        <bt:String id="UserVerify.ButtonLabel" DefaultValue="Open"/>
+      </bt:ShortStrings>
+
+      <bt:LongStrings>
+        <bt:String id="GetStarted.Description" DefaultValue="Otvor add-in a over aktuálne prihláseného používateľa cez OfficeRuntime SSO."/>
+        <bt:String id="UserVerify.ButtonTooltip" DefaultValue="Otvorí task pane add-inu."/>
+      </bt:LongStrings>
+    </Resources>
+
+    <WebApplicationInfo>
+      <Id>812a35b7-1627-4e9f-b649-391652a62fb6</Id>
+      <Resource>api://812a35b7-1627-4e9f-b649-391652a62fb6</Resource>
+      <Scopes>
+        <Scope>openid</Scope>
+        <Scope>profile</Scope>
+      </Scopes>
+    </WebApplicationInfo>
+
+  </VersionOverrides>
+</OfficeApp>
