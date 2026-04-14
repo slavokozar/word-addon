@@ -1,5 +1,11 @@
 Office.onReady(() => {
     console.log("Add-in pripravený");
+
+
+    console.log(Office.context.userProfile);
+
+    cosnole.log(OfficeRuntime.auth.getAccessToken());
+
 });
 
 function insertTemplate(type) {
