@@ -4,7 +4,7 @@ Office.onReady(() => {
 
     console.log(Office.context.userProfile);
 
-    cosnole.log(OfficeRuntime.auth.getAccessToken());
+    console.log(OfficeRuntime.auth.getAccessToken());
 
 });
 
