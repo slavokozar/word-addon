@@ -2,9 +2,11 @@ Office.onReady(() => {
     console.log("Add-in pripravený");
 
 
-    console.log(Office.context.userProfile);
+    console.log(Office.context);
 
     console.log(OfficeRuntime.auth.getAccessToken());
+
+    console.log('working v1.0.0.1')
 
 });
 
